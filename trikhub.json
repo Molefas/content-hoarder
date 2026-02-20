@@ -1,0 +1,11 @@
+{
+  "displayName": "Content Hoarder",
+  "shortDescription": "Collect content from URLs and feeds, then create articles in your voice",
+  "categories": ["content", "productivity"],
+  "keywords": ["content", "articles", "rss", "feeds", "writing", "curation"],
+  "author": {
+    "name": "TrikHub",
+    "github": "trikhub"
+  },
+  "repository": "https://github.com/trikhub/content-hoarder"
+}

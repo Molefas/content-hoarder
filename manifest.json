@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "id": "content-hoarder",
+  "name": "Content Hoarder",
+  "description": "Collect content from URLs and feeds, then create articles in your voice",
+  "version": "0.1.0",
+  "author": "TrikHub",
+  "repository": "https://github.com/trikhub/content-hoarder",
+  "license": "MIT",
+  "actions": {
+    "addInspiration": {
+      "description": "Add a URL as inspiration - auto-detects if single content or feed, extracts and stores content pieces",
+      "responseMode": "template",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to add as inspiration"
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Optional tags"
+          }
+        },
+        "required": ["url"]
+      },
+      "agentDataSchema": {
+        "type": "object",
+        "properties": {
+          "template": { "type": "string", "enum": ["success", "partial", "error"] },
+          "type": { "type": "string", "enum": ["single", "feed"] },
+          "contentCount": { "type": "integer" }
+        },
+        "required": ["template", "type", "contentCount"]
+      },
+      "responseTemplates": {
+        "success": { "text": "Added {{type}} inspiration with {{contentCount}} content piece(s)" },
+        "partial": { "text": "Partially processed {{type}} - {{contentCount}} pieces extracted" },
+        "error": { "text": "Failed to process inspiration" }
+      }
+    },
+    "listContent": {
+      "description": "List all stored content pieces",
+      "responseMode": "template",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "limit": { "type": "integer" },
+          "offset": { "type": "integer" }
+        }
+      },
+      "agentDataSchema": {
+        "type": "object",
+        "properties": {
+          "template": { "type": "string", "enum": ["success", "empty", "error"] },
+          "totalCount": { "type": "integer" },
+          "returnedCount": { "type": "integer" }
+        },
+        "required": ["template", "totalCount", "returnedCount"]
+      },
+      "responseTemplates": {
+        "success": { "text": "Showing {{returnedCount}} of {{totalCount}} content pieces" },
+        "empty": { "text": "No content stored yet" },
+        "error": { "text": "Failed to list content" }
+      }
+    },
+    "getContent": {
+      "description": "Get full details of a content piece",
+      "responseMode": "passthrough",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentId": { "type": "string" }
+        },
+        "required": ["contentId"]
+      },
+      "userContentSchema": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "source": { "type": "string" },
+          "content": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "addedAt": { "type": "string" }
+        }
+      }
+    },
+    "createArticle": {
+      "description": "Generate an article from selected content pieces",
+      "responseMode": "passthrough",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentIds": { "type": "array", "items": { "type": "string" } },
+          "instructions": { "type": "string" },
+          "title": { "type": "string" }
+        },
+        "required": ["contentIds", "instructions"]
+      },
+      "userContentSchema": {
+        "type": "object",
+        "properties": {
+          "articleId": { "type": "string" },
+          "title": { "type": "string" },
+          "content": { "type": "string" }
+        }
+      }
+    },
+    "listArticles": {
+      "description": "List all created articles",
+      "responseMode": "template",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": { "type": "integer" },
+          "offset": { "type": "integer" }
+        }
+      },
+      "agentDataSchema": {
+        "type": "object",
+        "properties": {
+          "template": { "type": "string", "enum": ["success", "empty", "error"] },
+          "totalCount": { "type": "integer" },
+          "returnedCount": { "type": "integer" }
+        },
+        "required": ["template", "totalCount", "returnedCount"]
+      },
+      "responseTemplates": {
+        "success": { "text": "Showing {{returnedCount}} of {{totalCount}} articles" },
+        "empty": { "text": "No articles created yet" },
+        "error": { "text": "Failed to list articles" }
+      }
+    },
+    "updateArticle": {
+      "description": "Edit and iterate on an existing article",
+      "responseMode": "passthrough",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "articleId": { "type": "string" },
+          "instructions": { "type": "string" },
+          "additionalContentIds": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["articleId", "instructions"]
+      },
+      "userContentSchema": {
+        "type": "object",
+        "properties": {
+          "articleId": { "type": "string" },
+          "title": { "type": "string" },
+          "content": { "type": "string" },
+          "version": { "type": "integer" }
+        }
+      }
+    },
+    "deleteContent": {
+      "description": "Remove a content piece from storage",
+      "responseMode": "template",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentId": { "type": "string" }
+        },
+        "required": ["contentId"]
+      },
+      "agentDataSchema": {
+        "type": "object",
+        "properties": {
+          "template": { "type": "string", "enum": ["success", "notFound", "error"] }
+        },
+        "required": ["template"]
+      },
+      "responseTemplates": {
+        "success": { "text": "Content deleted successfully" },
+        "notFound": { "text": "Content not found" },
+        "error": { "text": "Failed to delete content" }
+      }
+    }
+  },
+  "capabilities": {
+    "tools": [],
+    "storage": {
+      "enabled": true,
+      "maxSizeBytes": 10485760,
+      "persistent": true
+    }
+  },
+  "limits": {
+    "maxExecutionTimeMs": 60000
+  },
+  "entry": {
+    "module": "./dist/index.js",
+    "export": "default",
+    "runtime": "node"
+  },
+  "config": {
+    "required": [
+      { "key": "OPENAI_API_KEY", "description": "OpenAI API key for article generation" }
+    ],
+    "optional": []
+  }
+}

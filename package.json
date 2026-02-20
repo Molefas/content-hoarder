@@ -1,0 +1,28 @@
+{
+  "name": "content-hoarder",
+  "version": "0.1.0",
+  "description": "Collect content from URLs and feeds, then create articles in your voice",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "npm run build && tsx test.ts",
+    "test:integration": "npm run build && tsx test-trik.ts"
+  },
+  "dependencies": {
+    "@trikhub/manifest": "^0.7.0",
+    "rss-parser": "^3.13.0",
+    "node-html-parser": "^6.1.0",
+    "openai": "^4.0.0"
+  },
+  "devDependencies": {
+    "@trikhub/gateway": "workspace:*",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
