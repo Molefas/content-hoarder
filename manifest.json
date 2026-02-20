@@ -3,7 +3,7 @@
   "id": "content-hoarder",
   "name": "Content Hoarder",
   "description": "Collect content from URLs and feeds, then create articles in your voice",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "TrikHub",
   "repository": "https://github.com/trikhub/content-hoarder",
   "license": "MIT",
