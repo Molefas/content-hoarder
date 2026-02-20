@@ -3,7 +3,7 @@
   "id": "content-hoarder",
   "name": "Content Hoarder",
   "description": "Collect content from URLs and feeds, then create articles in your voice",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "TrikHub",
   "repository": "https://github.com/trikhub/content-hoarder",
   "license": "MIT",
@@ -80,12 +80,11 @@
       "userContentSchema": {
         "type": "object",
         "properties": {
-          "title": { "type": "string" },
-          "source": { "type": "string" },
+          "contentType": { "type": "string" },
           "content": { "type": "string" },
-          "tags": { "type": "array", "items": { "type": "string" } },
-          "addedAt": { "type": "string" }
-        }
+          "metadata": { "type": "object" }
+        },
+        "required": ["contentType", "content"]
       }
     },
     "createArticle": {
@@ -103,10 +102,11 @@
       "userContentSchema": {
         "type": "object",
         "properties": {
-          "articleId": { "type": "string" },
-          "title": { "type": "string" },
-          "content": { "type": "string" }
-        }
+          "contentType": { "type": "string" },
+          "content": { "type": "string" },
+          "metadata": { "type": "object" }
+        },
+        "required": ["contentType", "content"]
       }
     },
     "listArticles": {
@@ -149,11 +149,11 @@
       "userContentSchema": {
         "type": "object",
         "properties": {
-          "articleId": { "type": "string" },
-          "title": { "type": "string" },
+          "contentType": { "type": "string" },
           "content": { "type": "string" },
-          "version": { "type": "integer" }
-        }
+          "metadata": { "type": "object" }
+        },
+        "required": ["contentType", "content"]
       }
     },
     "deleteContent": {

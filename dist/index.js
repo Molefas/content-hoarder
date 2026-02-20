@@ -230,17 +230,23 @@ async function getContentAction(input, storage) {
     if (!content) {
         return {
             responseMode: 'passthrough',
-            userContent: { error: 'Content not found' },
+            userContent: {
+                contentType: 'error',
+                content: 'Content not found',
+            },
         };
     }
     return {
         responseMode: 'passthrough',
         userContent: {
-            title: content.title,
-            source: content.source,
-            content: content.content,
-            tags: content.tags,
-            addedAt: content.addedAt,
+            contentType: 'content',
+            content: `# ${content.title}\n\n**Source:** ${content.source}\n**Tags:** ${content.tags.join(', ') || 'none'}\n**Added:** ${content.addedAt}\n\n---\n\n${content.content}`,
+            metadata: {
+                title: content.title,
+                source: content.source,
+                tags: content.tags,
+                addedAt: content.addedAt,
+            },
         },
     };
 }
@@ -259,7 +265,10 @@ async function createArticle(input, storage, config) {
     if (sourceContent.length === 0) {
         return {
             responseMode: 'passthrough',
-            userContent: { error: 'No valid content pieces found' },
+            userContent: {
+                contentType: 'error',
+                content: 'No valid content pieces found',
+            },
         };
     }
     // Generate article using OpenAI
@@ -299,9 +308,12 @@ Write a well-structured article that synthesizes the key points from these sourc
     return {
         responseMode: 'passthrough',
         userContent: {
-            articleId,
-            title: articleTitle,
-            content: generatedContent,
+            contentType: 'article',
+            content: `# ${articleTitle}\n\n${generatedContent}`,
+            metadata: {
+                articleId,
+                title: articleTitle,
+            },
         },
     };
 }
@@ -353,7 +365,10 @@ async function updateArticle(input, storage, config) {
     if (!article) {
         return {
             responseMode: 'passthrough',
-            userContent: { error: 'Article not found' },
+            userContent: {
+                contentType: 'error',
+                content: 'Article not found',
+            },
         };
     }
     // Gather additional source content if provided
@@ -397,10 +412,13 @@ ${additionalContent.join('\n\n---\n\n')}`;
     return {
         responseMode: 'passthrough',
         userContent: {
-            articleId: article.id,
-            title: article.title,
-            content: updatedContent,
-            version: article.version,
+            contentType: 'article',
+            content: `# ${article.title}\n\n${updatedContent}`,
+            metadata: {
+                articleId: article.id,
+                title: article.title,
+                version: article.version,
+            },
         },
     };
 }
